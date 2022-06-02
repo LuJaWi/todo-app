@@ -1,0 +1,22 @@
+{
+  "name": "top-todo-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LuJaWi/top-todo-app.git"
+  },
+  "author": "Luke Witt",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/LuJaWi/top-todo-app/issues"
+  },
+  "homepage": "https://github.com/LuJaWi/top-todo-app#readme",
+  "dependencies": {
+    "webpack": "^5.73.0"
+  }
+}
