@@ -7,15 +7,23 @@ import "./style.css";
 // Array for holding the tasks once created
 let taskArray = [];
 
-const TaskCreator = (taskDescription, dueDate, taskPriority) => {
+const Task = (taskDescription, dueDate, taskPriority) => {
   taskDescription = taskDescription;
   dueDate = dueDate;
   // Value of 1-5 (1 is lowest)
   taskPriority = taskPriority;
+  // Assumes all newly created tasks are not yet completed
   let isComplete = false;
   return {taskDescription, dueDate, taskPriority, isComplete};
 };
 
-let testTask = TaskCreator("Test Description", 1, 4);
+// Click on Add task converts the button to a task
+// creation prompt
 
-console.log(testTask);
+// User fills out task creation prompts
+
+// After user hits 'OK', call Task factory function
+// using arguments entered by user
+
+// Use new Task object to create HTML object to
+// show task details
