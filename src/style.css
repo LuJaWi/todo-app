@@ -44,7 +44,7 @@ body {
   border: solid 3px rgb(205, 255, 205);
 }
 
-.add-item {
+.add-task-button {
   background-color: rgb(240, 255, 251);
   width: 60vw;
   text-align: center;
@@ -52,6 +52,16 @@ body {
   margin: 12px;
   border-radius: 10px;
   border: solid 3px rgb(193, 255, 238);
+}
+
+.add-task-prompt {
+  background-color: rgb(193, 255, 238);
+  width: 60vw;
+  text-align: center;
+  padding: 12px;
+  margin: 12px;
+  border-radius: 10px;
+  border: solid 3px rgb(123, 254, 219);
 }
 
 .page-footer {
