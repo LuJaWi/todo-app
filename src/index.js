@@ -4,11 +4,18 @@ import "./style.css";
 // Properties for task description, due date, 
 // priority, and completion status
 
-const TaskCreator = () => {
-  let taskDescription = "";
-  let dueDate = 0;
+// Array for holding the tasks once created
+let taskArray = [];
+
+const TaskCreator = (taskDescription, dueDate, taskPriority) => {
+  taskDescription = taskDescription;
+  dueDate = dueDate;
   // Value of 1-5 (1 is lowest)
-  let taskPriority = 3;
+  taskPriority = taskPriority;
   let isComplete = false;
   return {taskDescription, dueDate, taskPriority, isComplete};
 };
+
+let testTask = TaskCreator("Test Description", 1, 4);
+
+console.log(testTask);
