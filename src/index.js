@@ -6,6 +6,8 @@ import "./style.css";
 
 const TaskTracker = (() => {
 
+  // Creates an HTML element with fields for creating
+  // a new task.
   const promptForNewTask = () => {
     const addTaskElement = document.createElement('div');
     addTaskElement.classList.add('add-task-prompt');
@@ -40,7 +42,7 @@ const TaskTracker = (() => {
       taskPriortyOption.innerText = String(i);
       taskPriorityInput.appendChild(taskPriortyOption);
     };
-    
+
     taskPriorityInput.classList.add('add-task-field');
 
     // Task Due Date Field
@@ -63,7 +65,7 @@ const TaskTracker = (() => {
     submitButton.classList.add('task-confirmation-button', 'submit');
     submitButton.innerText = 'Add';
     submitButton.addEventListener('click', () => {
-      console.log(getInputValues())
+      console.log(createTaskObject())
     });
 
     const discardButton = document.createElement('div');
@@ -91,7 +93,9 @@ const TaskTracker = (() => {
     return addTaskElement;
   };
 
-  const getInputValues = () => {
+  // Creates a task element from the user input in the
+  // prompt for a new task
+  const createTaskObject = () => {
     const taskDescription = document.getElementById('task-description').value;
     const taskDueDate = document.getElementById('task-due-date').value;
     const taskPrioritySelector = document.getElementById('task-priority');
@@ -100,13 +104,13 @@ const TaskTracker = (() => {
     return {taskDescription, taskDueDate, taskPriority};
   };
 
-  const createTaskFromPrompt = () => {
-    let taskDescription = document.getElementById('task-description').value;
+  // Takes a task object and creates an HTML Element
+  // to display task information.
+  const newTaskElement = () => {
 
-    return taskDescription;
   };
 
-  return {promptForNewTask, createTaskFromPrompt};
+  return {promptForNewTask};
 })();
 
 const taskWindowSelector = document.querySelector('.to-do-window');
