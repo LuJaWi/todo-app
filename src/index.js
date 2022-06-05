@@ -67,6 +67,21 @@ const addTask = () => {
   taskDueDateInput.name = 'due-date'
   taskDueDateInput.classList.add('add-task-field');
 
+  // Submit or discard buttons
+  const taskConfirmation = document.createElement('div');
+  taskConfirmation.classList.add('task-confirmation');
+
+  const submitButton = document.createElement('div');
+  submitButton.classList.add('task-confirmation-button', 'submit');
+  submitButton.innerText = 'Add';
+
+  const discardButton = document.createElement('div');
+  discardButton.classList.add('task-confirmation-button', 'discard');
+  discardButton.innerText = 'Nevermind';
+
+  taskConfirmation.appendChild(submitButton);
+  taskConfirmation.appendChild(discardButton);
+
   // Append fields to form
   formElement.appendChild(taskDescriptionLabel);
   formElement.appendChild(document.createElement('br'));
@@ -79,6 +94,8 @@ const addTask = () => {
   formElement.appendChild(taskDueDateLabel);
   formElement.appendChild(document.createElement('br'));
   formElement.appendChild(taskDueDateInput);
+  formElement.appendChild(document.createElement('br'));
+  formElement.appendChild(taskConfirmation);
 
   return addTaskElement;
 };

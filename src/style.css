@@ -64,8 +64,30 @@ body {
   border: solid 3px rgb(123, 254, 219);
 }
 
-.add-task-field {
-  page-break-after: always;
+.task-confirmation {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: space-around;
+}
+
+.task-confirmation-button {
+  width: 128px;
+  padding: 12px;
+  border-radius: 5px;
+  background-color: hotpink;
+}
+
+.submit {
+  background-color: rgb(168, 252, 85);
+  border: solid 2px rgb(128, 255, 0);
+  box-sizing: border-box;
+}
+
+.discard {
+  background-color: rgb(244, 102, 102);
+  border: solid 2px rgb(255, 52, 52);
+  box-sizing: border-box;
 }
 
 .page-footer {
