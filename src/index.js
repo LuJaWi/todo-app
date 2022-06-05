@@ -46,6 +46,7 @@ const addTask = () => {
   taskPriorityInput.setAttribute('list', 'task-priority');
 
   const taskPriorityList = document.createElement('datalist');
+  taskPriorityList.id = 'task-priority'
   for (let i=1; i<=5; i++) {
     const taskPriortyOption = document.createElement('option');
     taskPriortyOption.setAttribute('value', String(i));
