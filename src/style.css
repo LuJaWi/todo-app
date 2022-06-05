@@ -64,6 +64,10 @@ body {
   border: solid 3px rgb(123, 254, 219);
 }
 
+.add-task-field {
+  page-break-after: always;
+}
+
 .page-footer {
   width: 100vw;
   background-color: rgb(232, 232, 232);
