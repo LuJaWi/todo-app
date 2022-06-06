@@ -79,7 +79,11 @@ const TaskTracker = (() => {
     submitButton.classList.add('task-confirmation-button', 'submit');
     submitButton.innerText = 'Add';
     submitButton.addEventListener('click', () => {
-      newTaskElement(createTaskObject())
+      if (isValidTask(createTaskObject())) {
+        newTaskElement(createTaskObject());
+        addTaskElement.remove();
+        taskWindowSelector.appendChild(showAddTaskButton());
+      }
     });
 
     const discardButton = document.createElement('div');
@@ -87,6 +91,7 @@ const TaskTracker = (() => {
     discardButton.innerText = 'Nevermind';
     discardButton.addEventListener('click', () => {
       addTaskElement.remove();
+      taskWindowSelector.appendChild(showAddTaskButton());
     });
 
     taskConfirmation.appendChild(submitButton);
