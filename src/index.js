@@ -141,6 +141,9 @@ const TaskTracker = (() => {
     const removeButton = document.createElement('div');
     removeButton.classList.add('remove-button');
     removeButton.innerText = "Remove";
+    removeButton.addEventListener('click', () => {
+      newTask.remove();
+    });
 
     options.appendChild(completedButton);
     options.appendChild(removeButton);
