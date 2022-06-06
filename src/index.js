@@ -6,6 +6,20 @@ import "./style.css";
 
 const TaskTracker = (() => {
 
+  // Creates "Add Task" button which can be clicked
+  // to bring up the new task prompt
+  const showAddTaskButton = () => {
+    const addTaskButton = document.createElement('div');
+    addTaskButton.classList.add('add-task-button');
+    addTaskButton.innerText = 'Add Task';
+    addTaskButton.addEventListener('click', () => {
+      document.querySelector('.to-do-window').appendChild(promptForNewTask());
+      addTaskButton.remove();
+    });
+
+    return addTaskButton;
+  };
+
   // Creates an HTML element with fields for creating
   // a new task.
   const promptForNewTask = () => {
@@ -71,6 +85,9 @@ const TaskTracker = (() => {
     const discardButton = document.createElement('div');
     discardButton.classList.add('task-confirmation-button', 'discard');
     discardButton.innerText = 'Nevermind';
+    discardButton.addEventListener('click', () => {
+      addTaskElement.remove();
+    });
 
     taskConfirmation.appendChild(submitButton);
     taskConfirmation.appendChild(discardButton);
@@ -107,6 +124,7 @@ const TaskTracker = (() => {
   // Takes a task object and creates an HTML Element
   // to display task information.
   const newTaskElement = (taskObject) => {
+    if (!isValidTask(taskObject)) {return};
     const newTask = document.createElement('div');
     newTask.classList.add('task');
     
@@ -134,9 +152,15 @@ const TaskTracker = (() => {
     const options = document.createElement('options');
     options.classList.add('options');
 
+    // Clicking the "Done" button will just remove the 
+    // task object for now, eventually would like to 
+    // move completed tasks to a "completed" list.
     const completedButton = document.createElement('div');
     completedButton.classList.add('completed-button');
     completedButton.innerText = "Done!";
+    completedButton.addEventListener('click', () => {
+      newTask.remove();
+    });
 
     const removeButton = document.createElement('div');
     removeButton.classList.add('remove-button');
@@ -154,12 +178,19 @@ const TaskTracker = (() => {
 
   };
 
-  return {promptForNewTask};
+  // Function for validating inputs of task to be created.
+  const isValidTask = (taskObject) => {
+    if (taskObject.description == "") {return false}; 
+    if (taskObject.dueDate == "") {return false};
+    return true;
+  };
+
+  return {showAddTaskButton};
 })();
 
 const taskWindowSelector = document.querySelector('.to-do-window');
 
-taskWindowSelector.appendChild(TaskTracker.promptForNewTask());
+taskWindowSelector.appendChild(TaskTracker.showAddTaskButton());
 
 // Click on Add task converts the button to a task
 // creation prompt
