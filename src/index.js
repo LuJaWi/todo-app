@@ -1,13 +1,96 @@
 import "./style.css";
 
-// Create factory function for adding tasks
-// Properties for task description, due date, 
-// priority, and completion status
+let projectArray = [];
 
-const TaskTracker = (() => {
+const Project = (() => {
 
-  // Creates "Add Task" button which can be clicked
-  // to bring up the new task prompt
+  // Array of task objects for project
+  const projectTaskArray = [];
+
+  // create task objects
+  const Task = (description, dueDate, priority) => {
+    return {description, dueDate, priority}
+  };
+
+  // Uses new task prompt fields to populate object info
+  const addTaskToProject = () => {
+    const description = document.getElementById('task-description').value;
+    const dueDate = document.getElementById('task-due-date').value;
+    const taskPrioritySelector = document.getElementById('task-priority');
+    const priority = taskPrioritySelector.options[taskPrioritySelector.selectedIndex].value;
+
+    let newTask = Task(description, dueDate, priority)
+    projectTaskArray.push(newTask);
+    return newTask;
+  };
+
+  // Remove task from project array
+  const removeTaskFromProject = (taskIndex) => {
+    projectTaskArray.splice(taskIndex, 1);
+  };
+
+  // DisplayProjectTasks function, takes array of task objects and displays them.
+
+  return {projectTaskArray, addTaskToProject, removeTaskFromProject};
+})();
+
+const Display = (() => {
+  const displayProjectTasks = (Project) => {
+    for (const task in Project.projectTaskArray) {
+      const newTask = document.createElement('div');
+      newTask.classList.add('task');
+      newTask.setAttribute('task-index', task);
+      
+      const details = document.createElement('div');
+      details.classList.add('details');
+
+      const description = document.createElement('div');
+      description.classList.add('description');
+      description.innerText = task.description;
+
+      const priority = document.createElement('div');
+      priority.classList.add('priority');
+      priority.innerText = task.priority;
+
+      const dueDate = document.createElement('div');
+      dueDate.classList.add('dueDate');
+      dueDate.innerText = "Due: " + task.dueDate;
+
+      details.appendChild(description);
+      details.appendChild(dueDate);
+      details.appendChild(priority);
+
+      newTask.appendChild(details);
+
+      const options = document.createElement('options');
+      options.classList.add('options');
+
+      // Clicking the "Done" button will just remove the 
+      // task object for now, eventually would like to 
+      // move completed tasks to a "completed" list.
+      const completedButton = document.createElement('div');
+      completedButton.classList.add('completed-button');
+      completedButton.innerText = "Done!";
+      completedButton.addEventListener('click', () => {
+        newTask.remove();
+      });
+
+      const removeButton = document.createElement('div');
+      removeButton.classList.add('remove-button');
+      removeButton.innerText = "Remove";
+      removeButton.addEventListener('click', () => {
+        newTask.remove();
+      });
+
+      options.appendChild(completedButton);
+      options.appendChild(removeButton);
+
+      newTask.appendChild(options);
+
+      document.querySelector('.to-do-window').appendChild(newTask);
+    };
+  }
+
   const showAddTaskButton = () => {
     const addTaskButton = document.createElement('div');
     addTaskButton.classList.add('add-task-button');
@@ -20,8 +103,6 @@ const TaskTracker = (() => {
     return addTaskButton;
   };
 
-  // Creates an HTML element with fields for creating
-  // a new task.
   const promptForNewTask = () => {
     const addTaskElement = document.createElement('div');
     addTaskElement.classList.add('add-task-prompt');
@@ -79,12 +160,12 @@ const TaskTracker = (() => {
     submitButton.classList.add('task-confirmation-button', 'submit');
     submitButton.innerText = 'Add';
     submitButton.addEventListener('click', () => {
-      if (isValidTask(createTaskObject())) {
-        newTaskElement(createTaskObject());
-        addTaskElement.remove();
-        taskWindowSelector.appendChild(showAddTaskButton());
-      }
+      Project.addTaskToProject()
+      displayProjectTasks(Project);
+      addTaskElement.remove();
+      taskWindowSelector.appendChild(showAddTaskButton());
     });
+  
 
     const discardButton = document.createElement('div');
     discardButton.classList.add('task-confirmation-button', 'discard');
@@ -115,95 +196,10 @@ const TaskTracker = (() => {
     return addTaskElement;
   };
 
-  // Creates a task element from the user input in the
-  // prompt for a new task
-  const createTaskObject = () => {
-    const description = document.getElementById('task-description').value;
-    const dueDate = document.getElementById('task-due-date').value;
-    const taskPrioritySelector = document.getElementById('task-priority');
-    const priority = taskPrioritySelector.options[taskPrioritySelector.selectedIndex].value;
-
-    return {description, dueDate, priority};
-  };
-
-  // Takes a task object and creates an HTML Element
-  // to display task information.
-  const newTaskElement = (taskObject) => {
-    if (!isValidTask(taskObject)) {return};
-    const newTask = document.createElement('div');
-    newTask.classList.add('task');
-    
-    const details = document.createElement('div');
-    details.classList.add('details');
-
-    const description = document.createElement('div');
-    description.classList.add('description');
-    description.innerText = taskObject.description;
-
-    const priority = document.createElement('div');
-    priority.classList.add('priority');
-    priority.innerText = taskObject.priority;
-
-    const dueDate = document.createElement('div');
-    dueDate.classList.add('dueDate');
-    dueDate.innerText = taskObject.dueDate;
-
-    details.appendChild(description);
-    details.appendChild(dueDate);
-    details.appendChild(priority);
-
-    newTask.appendChild(details);
-
-    const options = document.createElement('options');
-    options.classList.add('options');
-
-    // Clicking the "Done" button will just remove the 
-    // task object for now, eventually would like to 
-    // move completed tasks to a "completed" list.
-    const completedButton = document.createElement('div');
-    completedButton.classList.add('completed-button');
-    completedButton.innerText = "Done!";
-    completedButton.addEventListener('click', () => {
-      newTask.remove();
-    });
-
-    const removeButton = document.createElement('div');
-    removeButton.classList.add('remove-button');
-    removeButton.innerText = "Remove";
-    removeButton.addEventListener('click', () => {
-      newTask.remove();
-    });
-
-    options.appendChild(completedButton);
-    options.appendChild(removeButton);
-
-    newTask.appendChild(options);
-
-    document.querySelector('.to-do-window').appendChild(newTask);
-
-  };
-
-  // Function for validating inputs of task to be created.
-  const isValidTask = (taskObject) => {
-    if (taskObject.description == "") {return false}; 
-    if (taskObject.dueDate == "") {return false};
-    return true;
-  };
-
-  return {showAddTaskButton};
+  return {displayProjectTasks, showAddTaskButton};
 })();
+
 
 const taskWindowSelector = document.querySelector('.to-do-window');
 
-taskWindowSelector.appendChild(TaskTracker.showAddTaskButton());
-
-// Click on Add task converts the button to a task
-// creation prompt
-
-// User fills out task creation prompts
-
-// After user hits 'OK', call Task factory function
-// using arguments entered by user
-
-// Use new Task object to create HTML object to
-// show task details
+taskWindowSelector.appendChild(Display.showAddTaskButton());
