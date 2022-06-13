@@ -9,6 +9,7 @@ const Project = (() => {
 
   // create task objects
   const Task = (description, dueDate, priority) => {
+    // Should also have unique id to match to help with finding and updating.
     return {description, dueDate, priority}
   };
 
@@ -25,7 +26,7 @@ const Project = (() => {
   };
 
   // Remove task from project array
-  const removeTaskFromProject = (taskIndex) => {
+  const removeTaskFromProject = (valueToMatch) => {
     projectTaskArray.splice(taskIndex, 1);
   };
 
@@ -102,7 +103,7 @@ const Display = (() => {
 
     return addTaskButton;
   };
-
+  
   const promptForNewTask = () => {
     const addTaskElement = document.createElement('div');
     addTaskElement.classList.add('add-task-prompt');
