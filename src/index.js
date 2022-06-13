@@ -1,5 +1,6 @@
 import "./style.css";
 
+// Array to hold all the project arrays
 let projectArray = [];
 
 const Project = (() => {
@@ -9,8 +10,9 @@ const Project = (() => {
 
   // create task objects
   const Task = (description, dueDate, priority) => {
-    // Should also have unique id to match to help with finding and updating.
-    return {description, dueDate, priority}
+    // create a unique ID for the task that can be used to reference the task object
+    const id = Date.now()
+    return {description, dueDate, priority, id}
   };
 
   // Uses new task prompt fields to populate object info
@@ -27,7 +29,11 @@ const Project = (() => {
 
   // Remove task from project array
   const removeTaskFromProject = (valueToMatch) => {
-    projectTaskArray.splice(taskIndex, 1);
+    for (task in projectTaskArray) {
+      if (task.id == valueToMatch) {
+        projectTaskArray.splice(task, 1);
+      }
+    };
   };
 
   // DisplayProjectTasks function, takes array of task objects and displays them.
@@ -103,7 +109,7 @@ const Display = (() => {
 
     return addTaskButton;
   };
-  
+
   const promptForNewTask = () => {
     const addTaskElement = document.createElement('div');
     addTaskElement.classList.add('add-task-prompt');
