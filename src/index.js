@@ -22,14 +22,16 @@ const Project = (() => {
     const taskPrioritySelector = document.getElementById('task-priority');
     const priority = taskPrioritySelector.options[taskPrioritySelector.selectedIndex].value;
 
-    let newTask = Task(description, dueDate, priority)
+    let newTask = Task(description, dueDate, priority);
+    console.log(newTask);
     projectTaskArray.push(newTask);
+    console.log("Current Project Tasks: ", projectTaskArray);
     return newTask;
   };
 
   // Remove task from project array
   const removeTaskFromProject = (valueToMatch) => {
-    for (task in projectTaskArray) {
+    for (let task of projectTaskArray) {
       if (task.id == valueToMatch) {
         projectTaskArray.splice(task, 1);
       }
@@ -45,7 +47,6 @@ const Display = (() => {
   const displayTask = (task) => {
     const newTask = document.createElement('div');
     newTask.classList.add('task');
-    newTask.setAttribute('task-index', task);
     
     const details = document.createElement('div');
     details.classList.add('details');
@@ -78,6 +79,7 @@ const Display = (() => {
     completedButton.classList.add('completed-button');
     completedButton.innerText = "Done!";
     completedButton.addEventListener('click', () => {
+      Project.removeTaskFromProject(task.id);
       newTask.remove();
     });
 
@@ -85,6 +87,7 @@ const Display = (() => {
     removeButton.classList.add('remove-button');
     removeButton.innerText = "Remove";
     removeButton.addEventListener('click', () => {
+      Project.removeTaskFromProject(task.id);
       newTask.remove();
     });
 
@@ -96,6 +99,12 @@ const Display = (() => {
     document.querySelector('.to-do-window').appendChild(newTask);
 
   }
+
+  const displayNewProject = (Project) => {
+    for (task in Project.projectTaskArray) {
+      displayTask(task);
+    };
+  };
 
   const showAddTaskButton = () => {
     const addTaskButton = document.createElement('div');
