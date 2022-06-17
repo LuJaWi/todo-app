@@ -42,60 +42,59 @@ const Project = (() => {
 })();
 
 const Display = (() => {
-  const displayProjectTasks = (Project) => {
-    for (const task in Project.projectTaskArray) {
-      const newTask = document.createElement('div');
-      newTask.classList.add('task');
-      newTask.setAttribute('task-index', task);
-      
-      const details = document.createElement('div');
-      details.classList.add('details');
+  const displayTask = (task) => {
+    const newTask = document.createElement('div');
+    newTask.classList.add('task');
+    newTask.setAttribute('task-index', task);
+    
+    const details = document.createElement('div');
+    details.classList.add('details');
 
-      const description = document.createElement('div');
-      description.classList.add('description');
-      description.innerText = task.description;
+    const description = document.createElement('div');
+    description.classList.add('description');
+    description.innerText = task.description;
 
-      const priority = document.createElement('div');
-      priority.classList.add('priority');
-      priority.innerText = task.priority;
+    const priority = document.createElement('div');
+    priority.classList.add('priority');
+    priority.innerText = task.priority;
 
-      const dueDate = document.createElement('div');
-      dueDate.classList.add('dueDate');
-      dueDate.innerText = "Due: " + task.dueDate;
+    const dueDate = document.createElement('div');
+    dueDate.classList.add('dueDate');
+    dueDate.innerText = "Due: " + task.dueDate;
 
-      details.appendChild(description);
-      details.appendChild(dueDate);
-      details.appendChild(priority);
+    details.appendChild(description);
+    details.appendChild(dueDate);
+    details.appendChild(priority);
 
-      newTask.appendChild(details);
+    newTask.appendChild(details);
 
-      const options = document.createElement('options');
-      options.classList.add('options');
+    const options = document.createElement('options');
+    options.classList.add('options');
 
-      // Clicking the "Done" button will just remove the 
-      // task object for now, eventually would like to 
-      // move completed tasks to a "completed" list.
-      const completedButton = document.createElement('div');
-      completedButton.classList.add('completed-button');
-      completedButton.innerText = "Done!";
-      completedButton.addEventListener('click', () => {
-        newTask.remove();
-      });
+    // Clicking the "Done" button will just remove the 
+    // task object for now, eventually would like to 
+    // move completed tasks to a "completed" list.
+    const completedButton = document.createElement('div');
+    completedButton.classList.add('completed-button');
+    completedButton.innerText = "Done!";
+    completedButton.addEventListener('click', () => {
+      newTask.remove();
+    });
 
-      const removeButton = document.createElement('div');
-      removeButton.classList.add('remove-button');
-      removeButton.innerText = "Remove";
-      removeButton.addEventListener('click', () => {
-        newTask.remove();
-      });
+    const removeButton = document.createElement('div');
+    removeButton.classList.add('remove-button');
+    removeButton.innerText = "Remove";
+    removeButton.addEventListener('click', () => {
+      newTask.remove();
+    });
 
-      options.appendChild(completedButton);
-      options.appendChild(removeButton);
+    options.appendChild(completedButton);
+    options.appendChild(removeButton);
 
-      newTask.appendChild(options);
+    newTask.appendChild(options);
 
-      document.querySelector('.to-do-window').appendChild(newTask);
-    };
+    document.querySelector('.to-do-window').appendChild(newTask);
+
   }
 
   const showAddTaskButton = () => {
@@ -167,8 +166,8 @@ const Display = (() => {
     submitButton.classList.add('task-confirmation-button', 'submit');
     submitButton.innerText = 'Add';
     submitButton.addEventListener('click', () => {
-      Project.addTaskToProject()
-      displayProjectTasks(Project);
+      const newTask = Project.addTaskToProject()
+      displayTask(newTask);
       addTaskElement.remove();
       taskWindowSelector.appendChild(showAddTaskButton());
     });
@@ -203,7 +202,7 @@ const Display = (() => {
     return addTaskElement;
   };
 
-  return {displayProjectTasks, showAddTaskButton};
+  return {showAddTaskButton};
 })();
 
 
