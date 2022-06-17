@@ -6,13 +6,14 @@ body {
   flex-direction: column;
   height: 100vh;
   justify-content: space-between;
+  background-color: rgb(251, 159, 180);
 }
 
 .page-header {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  background-color: rgb(154, 255, 255);
+  background-color: rgb(255, 151, 152);
   width: 100vw;
   border-radius: 0 0 10px 10px;
 }
@@ -35,35 +36,35 @@ body {
 }
 
 .task {
-  background-color: honeydew;
+  background-color: rgb(212, 148, 193);
   width: 60vw;
   text-align: center;
   padding: 12px;
   margin: 12px;
   border-radius: 10px;
-  border: solid 3px rgb(205, 255, 205);
+  border: solid 3px rgb(185, 142, 204);
   display: flex;
   justify-content: space-around;
 }
 
 .add-task-button {
-  background-color: rgb(240, 255, 251);
+  background-color: rgb(185, 142, 204);
   width: 60vw;
   text-align: center;
   padding: 12px;
   margin: 12px;
   border-radius: 10px;
-  border: solid 3px rgb(193, 255, 238);
+  border: solid 3px rgb(89, 104, 193);
 }
 
 .add-task-prompt {
-  background-color: rgb(193, 255, 238);
+  background-color: rgb(255, 151, 152);
   width: 60vw;
   text-align: center;
   padding: 12px;
   margin: 12px;
   border-radius: 10px;
-  border: solid 3px rgb(123, 254, 219);
+  border: solid 3px rgb(212, 148, 193);
 }
 
 .task-confirmation {
@@ -94,7 +95,7 @@ body {
 
 .page-footer {
   width: 100vw;
-  background-color: rgb(232, 232, 232);
+  background-color: rgb(89, 104, 193);
   text-align: center;
   padding: 24px 0;
   border-radius: 10px 10px 0 0;
