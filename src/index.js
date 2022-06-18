@@ -23,25 +23,31 @@ const Project = (() => {
     const priority = taskPrioritySelector.options[taskPrioritySelector.selectedIndex].value;
 
     let newTask = Task(description, dueDate, priority);
-    console.log(newTask);
     projectTaskArray.push(newTask);
-    console.log("Current Project Tasks: ", projectTaskArray);
+    updateLocalStorage();
     return newTask;
   };
 
   // Remove task from project array
   const removeTaskFromProject = (valueToMatch) => {
-    for (let task of projectTaskArray) {
-      if (task.id == valueToMatch) {
+    for (let task in projectTaskArray) {
+      if (projectTaskArray[task].id == valueToMatch) {
         projectTaskArray.splice(task, 1);
       }
     };
   };
 
-  // DisplayProjectTasks function, takes array of task objects and displays them.
+  // updates local storage with the current projectTaskArray
+  const updateLocalStorage = () => {
+    localStorage.setItem("projectTaskArray", JSON.stringify(projectTaskArray));
+    console.log(JSON.parse(localStorage.getItem("projectTaskArray")))
+  }
 
   return {projectTaskArray, addTaskToProject, removeTaskFromProject};
 })();
+
+
+
 
 const Display = (() => {
   const displayTask = (task) => {
