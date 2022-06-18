@@ -1,7 +1,22 @@
 import "./style.css";
 
-// Array to hold all the project arrays
-let projectArray = [];
+// Array to hold all the project arrays. This array will be held in
+// Local storage to allow the data to be persistant after the 
+// browser has closed.
+
+
+// Prompt user to create a new project, this will call the Project 
+// factory function and push this new project to the project array,
+// which is where it will be referenced for future access.
+const ProjectList = (() => {
+  let projectArray = [];
+
+  const addProject = () => {}
+
+  const removeProject = () => {}
+
+  return {projectArray, addProject, removeProject};
+})();
 
 const Project = (() => {
 
@@ -45,9 +60,6 @@ const Project = (() => {
 
   return {projectTaskArray, addTaskToProject, removeTaskFromProject};
 })();
-
-
-
 
 const Display = (() => {
   const displayTask = (task) => {
