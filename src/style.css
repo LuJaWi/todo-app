@@ -109,6 +109,17 @@ body {
   box-sizing: border-box;
 }
 
+.project-choice-options {
+  display: flex;
+  justify-content: space-around;
+  padding: 6px 0 0 0;
+}
+
+.new-project-choice {
+  width: 24px;
+  border-radius: 5px;
+}
+
 .page-footer {
   width: 100vw;
   background-color: rgb(89, 104, 193);

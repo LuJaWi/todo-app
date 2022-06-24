@@ -10,8 +10,10 @@ import "./style.css";
 // which is where it will be referenced for future access.
 const ProjectList = (() => {
 
-  const addProject = () => {
-    projectArray.push(Project)
+  const addProject = (name) => {
+    let newProject = Project
+    newProject.projectName = name;
+    projectArray.push(newProject)
   }
 
   const removeProject = () => {}
@@ -19,6 +21,8 @@ const ProjectList = (() => {
   let projectArray = [];
 
   const Project = (() => {
+
+    let projectName = "";
 
     // Array of task objects for project
     const projectTaskArray = [];
@@ -58,14 +62,14 @@ const ProjectList = (() => {
       console.log(JSON.parse(localStorage.getItem("projectTaskArray")))
     }
   
-    return {projectTaskArray, addTaskToProject, removeTaskFromProject};
+    return {projectName, projectTaskArray, addTaskToProject, removeTaskFromProject};
   })();
 
   return {Project, addProject, removeProject, projectArray};
 })();
 
 let newProject = ProjectList;
-newProject.addProject()
+newProject.addProject("ProjectName")
 console.log(newProject)
 
 const Display = (() => {
@@ -236,10 +240,60 @@ const Display = (() => {
     return addTaskElement;
   };
 
-  return {showAddTaskButton};
+  const showNewProjectButton = () => {
+
+    const newProjectButton = document.createElement('div');
+    newProjectButton.classList.add('new-project')
+    newProjectButton.classList.add('project')
+    newProjectButton.innerText = "+ New Project"
+    
+    newProjectButton.addEventListener('click', () => {
+      newProjectButton.remove()
+      document.querySelector('.sidebar').appendChild(promptForNewProject())
+    })
+
+    return newProjectButton
+  }
+
+  const promptForNewProject = () => {
+    const prompt = document.createElement('form')
+
+    prompt.classList.add('project');
+    prompt.type = 'text';
+    prompt.id = 'task-description';
+    prompt.classList.add('add-task-field');
+
+    const projectNameField = document.createElement('input');
+    projectNameField.setAttribute('size', '12');
+
+    const submitButton = document.createElement('div');
+    submitButton.classList.add('submit')
+    submitButton.classList.add('new-project-choice')
+    submitButton.innerText = '✓'
+    const declineButton = document.createElement('div');
+    declineButton.classList.add('discard')
+    declineButton.classList.add('new-project-choice')
+    declineButton.innerText = 'X'
+
+    const projectSubmitButtons = document.createElement('div');
+    projectSubmitButtons.classList.add('project-choice-options')
+
+    prompt.appendChild(projectNameField)
+
+    projectSubmitButtons.appendChild(declineButton)
+    projectSubmitButtons.appendChild(submitButton)
+
+    prompt.appendChild(projectSubmitButtons)
+
+    return prompt
+  }
+
+  return {showAddTaskButton, showNewProjectButton};
 })();
 
 
 const taskWindowSelector = document.querySelector('.to-do-window');
+const sidebarSelector = document.querySelector('.sidebar')
 
 taskWindowSelector.appendChild(Display.showAddTaskButton());
+sidebarSelector.appendChild(Display.showNewProjectButton())
