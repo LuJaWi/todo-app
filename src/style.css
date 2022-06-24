@@ -26,6 +26,22 @@ body {
   display: flex;
   width: 100vw;
   align-items: center;
+  height: calc(100vh - 24px - 24px);
+}
+
+.sidebar {
+  width: 32vh;
+  background-color: rgb(185, 142, 204);
+  height: 100%;
+}
+
+.project {
+  text-align: center;
+  padding: 12px 6px;
+  margin: 12px;
+  border: solid 3px rgb(89, 104, 193);
+  border-radius: 5px;
+  box-sizing: border-box;
 }
 
 .to-do-window {

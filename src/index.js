@@ -9,57 +9,64 @@ import "./style.css";
 // factory function and push this new project to the project array,
 // which is where it will be referenced for future access.
 const ProjectList = (() => {
-  let projectArray = [];
 
-  const addProject = () => {}
+  const addProject = () => {
+    projectArray.push(Project)
+  }
 
   const removeProject = () => {}
 
-  return {projectArray, addProject, removeProject};
-})();
+  let projectArray = [];
 
-const Project = (() => {
+  const Project = (() => {
 
-  // Array of task objects for project
-  const projectTaskArray = [];
-
-  // create task objects
-  const Task = (description, dueDate, priority) => {
-    // create a unique ID for the task that can be used to reference the task object
-    const id = Date.now()
-    return {description, dueDate, priority, id}
-  };
-
-  // Uses new task prompt fields to populate object info
-  const addTaskToProject = () => {
-    const description = document.getElementById('task-description').value;
-    const dueDate = document.getElementById('task-due-date').value;
-    const taskPrioritySelector = document.getElementById('task-priority');
-    const priority = taskPrioritySelector.options[taskPrioritySelector.selectedIndex].value;
-
-    let newTask = Task(description, dueDate, priority);
-    projectTaskArray.push(newTask);
-    updateLocalStorage();
-    return newTask;
-  };
-
-  // Remove task from project array
-  const removeTaskFromProject = (valueToMatch) => {
-    for (let task in projectTaskArray) {
-      if (projectTaskArray[task].id == valueToMatch) {
-        projectTaskArray.splice(task, 1);
-      }
+    // Array of task objects for project
+    const projectTaskArray = [];
+  
+    // create task objects
+    const Task = (description, dueDate, priority) => {
+      // create a unique ID for the task that can be used to reference the task object
+      const id = Date.now()
+      return {description, dueDate, priority, id}
     };
-  };
+  
+    // Uses new task prompt fields to populate object info
+    const addTaskToProject = () => {
+      const description = document.getElementById('task-description').value;
+      const dueDate = document.getElementById('task-due-date').value;
+      const taskPrioritySelector = document.getElementById('task-priority');
+      const priority = taskPrioritySelector.options[taskPrioritySelector.selectedIndex].value;
+  
+      let newTask = Task(description, dueDate, priority);
+      projectTaskArray.push(newTask);
+      updateLocalStorage();
+      return newTask;
+    };
+  
+    // Remove task from project array
+    const removeTaskFromProject = (valueToMatch) => {
+      for (let task in projectTaskArray) {
+        if (projectTaskArray[task].id == valueToMatch) {
+          projectTaskArray.splice(task, 1);
+        }
+      };
+    };
+  
+    // updates local storage with the current projectTaskArray
+    const updateLocalStorage = () => {
+      localStorage.setItem("projectTaskArray", JSON.stringify(projectTaskArray));
+      console.log(JSON.parse(localStorage.getItem("projectTaskArray")))
+    }
+  
+    return {projectTaskArray, addTaskToProject, removeTaskFromProject};
+  })();
 
-  // updates local storage with the current projectTaskArray
-  const updateLocalStorage = () => {
-    localStorage.setItem("projectTaskArray", JSON.stringify(projectTaskArray));
-    console.log(JSON.parse(localStorage.getItem("projectTaskArray")))
-  }
-
-  return {projectTaskArray, addTaskToProject, removeTaskFromProject};
+  return {Project, addProject, removeProject, projectArray};
 })();
+
+let newProject = ProjectList;
+newProject.addProject()
+console.log(newProject)
 
 const Display = (() => {
   const displayTask = (task) => {
@@ -97,7 +104,7 @@ const Display = (() => {
     completedButton.classList.add('completed-button');
     completedButton.innerText = "Done!";
     completedButton.addEventListener('click', () => {
-      Project.removeTaskFromProject(task.id);
+      ProjectList.Project.removeTaskFromProject(task.id);
       newTask.remove();
     });
 
@@ -105,7 +112,7 @@ const Display = (() => {
     removeButton.classList.add('remove-button');
     removeButton.innerText = "Remove";
     removeButton.addEventListener('click', () => {
-      Project.removeTaskFromProject(task.id);
+      ProjectList.Project.removeTaskFromProject(task.id);
       newTask.remove();
     });
 
@@ -119,7 +126,7 @@ const Display = (() => {
   }
 
   const displayNewProject = (Project) => {
-    for (task in Project.projectTaskArray) {
+    for (task in ProjectList.Project.projectTaskArray) {
       displayTask(task);
     };
   };
@@ -193,7 +200,7 @@ const Display = (() => {
     submitButton.classList.add('task-confirmation-button', 'submit');
     submitButton.innerText = 'Add';
     submitButton.addEventListener('click', () => {
-      const newTask = Project.addTaskToProject()
+      const newTask = ProjectList.Project.addTaskToProject()
       displayTask(newTask);
       addTaskElement.remove();
       taskWindowSelector.appendChild(showAddTaskButton());
