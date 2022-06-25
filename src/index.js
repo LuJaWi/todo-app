@@ -1,64 +1,75 @@
 import "./style.css";
 
-// Array to hold all the project arrays. This array will be held in
-// Local storage to allow the data to be persistant after the 
-// browser has closed.
 
 
-// Prompt user to create a new project, this will call the Project 
-// factory function and push this new project to the project array,
-// which is where it will be referenced for future access.
 const ProjectList = (() => {
+
+  // Arrray to hold all child Project Objects
   let projectArray = [];
 
-  const addProject = () => {}
+  // This value will be used to indicate which Project is currently being viewed
+  // exported to allow display to manipulate activeProject
+  let currentProjectIndex = 0;
+
+  // Allows outside functions to reference the active project
+  let activeProject = projectArray[currentProjectIndex]
+
+  const addProject = (name) => {
+    const newProject = Project(name);
+    projectArray.push(newProject)
+    console.log("projectArray:");
+    console.log(projectArray);
+    return {newProject}
+  }
 
   const removeProject = () => {}
 
-  return {projectArray, addProject, removeProject};
-})();
+  const Project = (name) => {
 
-const Project = (() => {
+    let projectName = name;
 
-  // Array of task objects for project
-  const projectTaskArray = [];
-
-  // create task objects
-  const Task = (description, dueDate, priority) => {
-    // create a unique ID for the task that can be used to reference the task object
-    const id = Date.now()
-    return {description, dueDate, priority, id}
-  };
-
-  // Uses new task prompt fields to populate object info
-  const addTaskToProject = () => {
-    const description = document.getElementById('task-description').value;
-    const dueDate = document.getElementById('task-due-date').value;
-    const taskPrioritySelector = document.getElementById('task-priority');
-    const priority = taskPrioritySelector.options[taskPrioritySelector.selectedIndex].value;
-
-    let newTask = Task(description, dueDate, priority);
-    projectTaskArray.push(newTask);
-    updateLocalStorage();
-    return newTask;
-  };
-
-  // Remove task from project array
-  const removeTaskFromProject = (valueToMatch) => {
-    for (let task in projectTaskArray) {
-      if (projectTaskArray[task].id == valueToMatch) {
-        projectTaskArray.splice(task, 1);
-      }
+    // Array of task objects for project
+    const projectTaskArray = [];
+  
+    // create task objects
+    const Task = (description, dueDate, priority) => {
+      // create a unique ID for the task that can be used to reference the task object
+      const id = Date.now()
+      return {description, dueDate, priority, id}
     };
+  
+    // Uses new task prompt fields to populate object info
+    const addTaskToProject = () => {
+      const description = document.getElementById('task-description').value;
+      const dueDate = document.getElementById('task-due-date').value;
+      const taskPrioritySelector = document.getElementById('task-priority');
+      const priority = taskPrioritySelector.options[taskPrioritySelector.selectedIndex].value;
+  
+      let newTask = Task(description, dueDate, priority);
+      projectTaskArray.push(newTask);
+      updateLocalStorage();
+      return newTask;
+    };
+  
+    // Remove task from project array
+    const removeTaskFromProject = (valueToMatch) => {
+      for (let task in projectTaskArray) {
+        if (projectTaskArray[task].id == valueToMatch) {
+          projectTaskArray.splice(task, 1);
+        }
+      };
+    };
+  
+    // updates local storage with the current projectTaskArray
+    const updateLocalStorage = () => {
+      localStorage.setItem("projectTaskArray", JSON.stringify(projectTaskArray));
+      console.log(JSON.parse(localStorage.getItem("projectTaskArray")))
+    }
+  
+    return {projectName, projectTaskArray, addTaskToProject, removeTaskFromProject};
   };
 
-  // updates local storage with the current projectTaskArray
-  const updateLocalStorage = () => {
-    localStorage.setItem("projectTaskArray", JSON.stringify(projectTaskArray));
-    console.log(JSON.parse(localStorage.getItem("projectTaskArray")))
-  }
-
-  return {projectTaskArray, addTaskToProject, removeTaskFromProject};
+  return {Project, addProject, removeProject, projectArray, currentProjectIndex};
 })();
 
 const Display = (() => {
@@ -97,7 +108,7 @@ const Display = (() => {
     completedButton.classList.add('completed-button');
     completedButton.innerText = "Done!";
     completedButton.addEventListener('click', () => {
-      Project.removeTaskFromProject(task.id);
+      ProjectList.Project.removeTaskFromProject(task.id);
       newTask.remove();
     });
 
@@ -105,7 +116,7 @@ const Display = (() => {
     removeButton.classList.add('remove-button');
     removeButton.innerText = "Remove";
     removeButton.addEventListener('click', () => {
-      Project.removeTaskFromProject(task.id);
+      ProjectList.Project.removeTaskFromProject(task.id);
       newTask.remove();
     });
 
@@ -118,10 +129,11 @@ const Display = (() => {
 
   }
 
-  const displayNewProject = (Project) => {
-    for (task in Project.projectTaskArray) {
+  const displayProject = (Project) => {
+    for (task in ProjectList.Project.projectTaskArray) {
       displayTask(task);
     };
+    taskWindowSelector.appendChild(showAddTaskButton());
   };
 
   const showAddTaskButton = () => {
@@ -193,7 +205,7 @@ const Display = (() => {
     submitButton.classList.add('task-confirmation-button', 'submit');
     submitButton.innerText = 'Add';
     submitButton.addEventListener('click', () => {
-      const newTask = Project.addTaskToProject()
+      const newTask = ProjectList.projectArray[ProjectList.currentProjectIndex].addTaskToProject();
       displayTask(newTask);
       addTaskElement.remove();
       taskWindowSelector.appendChild(showAddTaskButton());
@@ -229,10 +241,79 @@ const Display = (() => {
     return addTaskElement;
   };
 
-  return {showAddTaskButton};
+  const showNewProjectButton = () => {
+
+    const newProjectButton = document.createElement('div');
+    newProjectButton.classList.add('new-project')
+    newProjectButton.classList.add('project')
+    newProjectButton.innerText = "+ New Project"
+    
+    newProjectButton.addEventListener('click', () => {
+      newProjectButton.remove()
+      document.querySelector('.sidebar').appendChild(promptForNewProject())
+    })
+
+    return newProjectButton
+  }
+
+  const promptForNewProject = () => {
+    const prompt = document.createElement('form')
+
+    prompt.classList.add('project');
+
+    const projectNameField = document.createElement('input');
+    projectNameField.setAttribute('size', 'inherit');
+    projectNameField.type = 'text';
+    projectNameField.id = 'project-description';
+    projectNameField.classList.add('add-project-field');
+
+    const submitButton = document.createElement('div');
+    submitButton.classList.add('submit')
+    submitButton.classList.add('new-project-choice')
+    submitButton.innerText = '✓'
+    submitButton.addEventListener('click', () => {
+      prompt.remove()
+      const {newProject} = ProjectList.addProject(projectNameField.value);
+      console.log(newProject);
+      addProjectToSideBar(newProject);
+      document.querySelector('.sidebar').appendChild(showNewProjectButton())
+    })
+
+    const declineButton = document.createElement('div');
+    declineButton.classList.add('discard')
+    declineButton.classList.add('new-project-choice')
+    declineButton.innerText = 'X'
+    declineButton.addEventListener('click', () => {
+      prompt.remove()
+      document.querySelector('.sidebar').appendChild(showNewProjectButton())
+    })
+
+    const projectSubmitButtons = document.createElement('div');
+    projectSubmitButtons.classList.add('project-choice-options')
+
+    prompt.appendChild(projectNameField)
+
+    projectSubmitButtons.appendChild(declineButton)
+    projectSubmitButtons.appendChild(submitButton)
+
+    prompt.appendChild(projectSubmitButtons)
+
+    return prompt
+  }
+
+  const addProjectToSideBar = (project) => {
+    const newProjectSidebarElement = document.createElement('div');
+    newProjectSidebarElement.classList.add('project')
+    newProjectSidebarElement.innerText = project.projectName
+
+    sidebarSelector.appendChild(newProjectSidebarElement);
+  }
+
+  return {showNewProjectButton};
 })();
 
 
 const taskWindowSelector = document.querySelector('.to-do-window');
+const sidebarSelector = document.querySelector('.sidebar')
 
-taskWindowSelector.appendChild(Display.showAddTaskButton());
+sidebarSelector.appendChild(Display.showNewProjectButton())
