@@ -14,16 +14,17 @@ const ProjectList = () => {
   let currentProjectIndex = 0;
 
   const addProject = (name) => {
-    let newProject = Project(name);
+    let newProject = Project;
+    newProject.projectName = name;
     projectArray.push(newProject)
-    return {newProject}
+    return newProject
   }
 
   const removeProject = () => {}
 
-  const Project = (name) => {
+  const Project = (() => {
 
-    let projectName = name;
+    let projectName = "";
 
     // Array of task objects for project
     const projectTaskArray = [];
@@ -57,7 +58,7 @@ const ProjectList = () => {
     };
   
     return {projectName, projectTaskArray, addTaskToProject, removeTaskFromProject};
-  };
+  })();
 
   return {Project, addProject, removeProject, projectArray, currentProjectIndex};
 };
@@ -119,8 +120,8 @@ const Display = (() => {
 
   }
 
-  const displayProject = (Project) => {
-    for (task in userProjectList.Project.projectTaskArray) {
+  const loadProjectTasks = (project) => {
+    for (task in project.projectTaskArray) {
       displayTask(task);
     };
     taskWindowSelector.appendChild(showAddTaskButton());
@@ -195,7 +196,7 @@ const Display = (() => {
     submitButton.classList.add('task-confirmation-button', 'submit');
     submitButton.innerText = 'Add';
     submitButton.addEventListener('click', () => {
-      const newTask = userProjectList.projectArray[userProjectList.currentProjectIndex].addTaskToProject();
+      const newTask = console.log(userProjectList.projectArray[userProjectList.currentProjectIndex]);
       displayTask(newTask);
       addTaskElement.remove();
       taskWindowSelector.appendChild(showAddTaskButton());
@@ -263,7 +264,7 @@ const Display = (() => {
     submitButton.innerText = '✓'
     submitButton.addEventListener('click', () => {
       prompt.remove()
-      const {newProject} = userProjectList.addProject(projectNameField.value);
+      const newProject = userProjectList.addProject(projectNameField.value);
       addProjectToSideBar(newProject);
       userProjectList.currentProjectIndex = (userProjectList.projectArray.length - 1)
       updateLocalStorage(userProjectList);
@@ -295,19 +296,22 @@ const Display = (() => {
   const addProjectToSideBar = (project) => {
     const newProjectSidebarElement = document.createElement('div');
     newProjectSidebarElement.classList.add('project')
+    newProjectSidebarElement.addEventListener('click', () => {
+      loadProjectTasks(project)
+    })
 
     newProjectSidebarElement.innerText = project.projectName
 
     sidebarSelector.appendChild(newProjectSidebarElement);
   }
 
-  const loadProjects = (projectList) => {
+  const loadSavedProjectsToSidebar = (projectList) => {
     for (let project in projectList.projectArray) {
       addProjectToSideBar(projectList.projectArray[project])
     }
   }
 
-  return {showNewProjectButton, loadProjects};
+  return {showNewProjectButton, loadSavedProjectsToSidebar};
 })();
 
 function updateLocalStorage(projectList) {
@@ -322,7 +326,7 @@ if (localStorage.key(0)) {
   for (let project in savedUserData.projectArray) {
     userProjectList.projectArray.push(savedUserData.projectArray[project])
   }
-  Display.loadProjects(userProjectList)
+  Display.loadSavedProjectsToSidebar(userProjectList)
 }
 
 console.log(userProjectList)
