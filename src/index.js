@@ -14,7 +14,7 @@ const ProjectList = () => {
   let currentProjectIndex = 0;
 
   const addProject = (name) => {
-    let newProject = Project;
+    let newProject = {Project};
     newProject.projectName = name;
     projectArray.push(newProject)
     return newProject
