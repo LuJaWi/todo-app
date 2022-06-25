@@ -24,7 +24,7 @@ const ProjectList = () => {
 
   const Project = (() => {
 
-    let projectName = "";
+    let projectName;
 
     // Array of task objects for project
     const projectTaskArray = [];
@@ -196,7 +196,8 @@ const Display = (() => {
     submitButton.classList.add('task-confirmation-button', 'submit');
     submitButton.innerText = 'Add';
     submitButton.addEventListener('click', () => {
-      const newTask = console.log(userProjectList.projectArray[userProjectList.currentProjectIndex]);
+      console.log(userProjectList.projectArray[userProjectList.currentProjectIndex])
+      const newTask = userProjectList.projectArray[userProjectList.currentProjectIndex].Project.addTaskToProject();
       displayTask(newTask);
       addTaskElement.remove();
       taskWindowSelector.appendChild(showAddTaskButton());
