@@ -324,7 +324,7 @@ if (localStorage.key(0)) {
   let savedUserData = JSON.parse(localStorage.getItem('savedData'))
   userProjectList.currentProjectIndex = savedUserData.currentProjectIndex
   for (let project in savedUserData.projectArray) {
-    userProjectList.projectArray.push(savedUserData.projectArray[project])
+    userProjectList.addProject(savedUserData.projectArray[project].projectName)
   }
   Display.loadSavedProjectsToSidebar(userProjectList)
 }
