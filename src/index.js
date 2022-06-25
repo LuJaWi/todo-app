@@ -319,9 +319,12 @@ let userProjectList = ProjectList()
 if (localStorage.key(0)) {
   let savedUserData = JSON.parse(localStorage.getItem('savedData'))
   userProjectList.currentProjectIndex = savedUserData.currentProjectIndex
-  userProjectList.projectArray = savedUserData.projectArray
+  for (let project in savedUserData.projectArray) {
+    userProjectList.projectArray.push(savedUserData.projectArray[project])
+  }
   Display.loadProjects(userProjectList)
 }
+
 console.log(userProjectList)
 
 sidebarSelector.appendChild(Display.showNewProjectButton())
