@@ -1,8 +1,10 @@
 import "./style.css";
 
+const taskWindowSelector = document.querySelector('.to-do-window');
+const sidebarSelector = document.querySelector('.sidebar')
 
 
-const ProjectList = (() => {
+const ProjectList = () => {
 
   // Arrray to hold all child Project Objects
   let projectArray = [];
@@ -11,14 +13,9 @@ const ProjectList = (() => {
   // exported to allow display to manipulate activeProject
   let currentProjectIndex = 0;
 
-  // Allows outside functions to reference the active project
-  let activeProject = projectArray[currentProjectIndex]
-
   const addProject = (name) => {
-    const newProject = Project(name);
+    let newProject = Project(name);
     projectArray.push(newProject)
-    console.log("projectArray:");
-    console.log(projectArray);
     return {newProject}
   }
 
@@ -47,7 +44,6 @@ const ProjectList = (() => {
   
       let newTask = Task(description, dueDate, priority);
       projectTaskArray.push(newTask);
-      updateLocalStorage();
       return newTask;
     };
   
@@ -60,17 +56,11 @@ const ProjectList = (() => {
       };
     };
   
-    // updates local storage with the current projectTaskArray
-    const updateLocalStorage = () => {
-      localStorage.setItem("projectTaskArray", JSON.stringify(projectTaskArray));
-      console.log(JSON.parse(localStorage.getItem("projectTaskArray")))
-    }
-  
     return {projectName, projectTaskArray, addTaskToProject, removeTaskFromProject};
   };
 
   return {Project, addProject, removeProject, projectArray, currentProjectIndex};
-})();
+};
 
 const Display = (() => {
   const displayTask = (task) => {
@@ -108,7 +98,7 @@ const Display = (() => {
     completedButton.classList.add('completed-button');
     completedButton.innerText = "Done!";
     completedButton.addEventListener('click', () => {
-      ProjectList.Project.removeTaskFromProject(task.id);
+      userProjectList.Project.removeTaskFromProject(task.id);
       newTask.remove();
     });
 
@@ -116,7 +106,7 @@ const Display = (() => {
     removeButton.classList.add('remove-button');
     removeButton.innerText = "Remove";
     removeButton.addEventListener('click', () => {
-      ProjectList.Project.removeTaskFromProject(task.id);
+      userProjectList.Project.removeTaskFromProject(task.id);
       newTask.remove();
     });
 
@@ -130,7 +120,7 @@ const Display = (() => {
   }
 
   const displayProject = (Project) => {
-    for (task in ProjectList.Project.projectTaskArray) {
+    for (task in userProjectList.Project.projectTaskArray) {
       displayTask(task);
     };
     taskWindowSelector.appendChild(showAddTaskButton());
@@ -205,7 +195,7 @@ const Display = (() => {
     submitButton.classList.add('task-confirmation-button', 'submit');
     submitButton.innerText = 'Add';
     submitButton.addEventListener('click', () => {
-      const newTask = ProjectList.projectArray[ProjectList.currentProjectIndex].addTaskToProject();
+      const newTask = userProjectList.projectArray[userProjectList.currentProjectIndex].addTaskToProject();
       displayTask(newTask);
       addTaskElement.remove();
       taskWindowSelector.appendChild(showAddTaskButton());
@@ -273,9 +263,10 @@ const Display = (() => {
     submitButton.innerText = '✓'
     submitButton.addEventListener('click', () => {
       prompt.remove()
-      const {newProject} = ProjectList.addProject(projectNameField.value);
-      console.log(newProject);
+      const {newProject} = userProjectList.addProject(projectNameField.value);
       addProjectToSideBar(newProject);
+      userProjectList.currentProjectIndex = (userProjectList.projectArray.length - 1)
+      updateLocalStorage(userProjectList);
       document.querySelector('.sidebar').appendChild(showNewProjectButton())
     })
 
@@ -304,16 +295,33 @@ const Display = (() => {
   const addProjectToSideBar = (project) => {
     const newProjectSidebarElement = document.createElement('div');
     newProjectSidebarElement.classList.add('project')
+
     newProjectSidebarElement.innerText = project.projectName
 
     sidebarSelector.appendChild(newProjectSidebarElement);
   }
 
-  return {showNewProjectButton};
+  const loadProjects = (projectList) => {
+    for (let project in projectList.projectArray) {
+      addProjectToSideBar(projectList.projectArray[project])
+    }
+  }
+
+  return {showNewProjectButton, loadProjects};
 })();
 
+function updateLocalStorage(projectList) {
+  localStorage.setItem('savedData', JSON.stringify(projectList));
+}
 
-const taskWindowSelector = document.querySelector('.to-do-window');
-const sidebarSelector = document.querySelector('.sidebar')
+let userProjectList = ProjectList()
+
+if (localStorage.key(0)) {
+  let savedUserData = JSON.parse(localStorage.getItem('savedData'))
+  userProjectList.currentProjectIndex = savedUserData.currentProjectIndex
+  userProjectList.projectArray = savedUserData.projectArray
+  Display.loadProjects(userProjectList)
+}
+console.log(userProjectList)
 
 sidebarSelector.appendChild(Display.showNewProjectButton())
