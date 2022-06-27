@@ -332,4 +332,10 @@ if (localStorage.key(0)) {
 
 console.log(userProjectList)
 
+const resetButtonSelector = document.querySelector(".reset-button");
+resetButtonSelector.addEventListener('click', () => {
+  localStorage.clear()
+  console.log('localStorage cleared!')
+})
+
 sidebarSelector.appendChild(Display.showNewProjectButton())
