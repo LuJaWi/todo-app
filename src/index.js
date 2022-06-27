@@ -30,21 +30,15 @@ const ProjectList = () => {
     const projectTaskArray = [];
   
     // create task objects
-    const Task = (description, dueDate, priority) => {
-      // create a unique ID for the task that can be used to reference the task object
-      const id = Date.now()
+    let Task = (description, dueDate, priority, id) => {
       return {description, dueDate, priority, id}
     };
   
     // Uses new task prompt fields to populate object info
-    const addTaskToProject = () => {
-      const description = document.getElementById('task-description').value;
-      const dueDate = document.getElementById('task-due-date').value;
-      const taskPrioritySelector = document.getElementById('task-priority');
-      const priority = taskPrioritySelector.options[taskPrioritySelector.selectedIndex].value;
-  
-      let newTask = Task(description, dueDate, priority);
+    const addTaskToProject = (taskFormObject) => {
+      let newTask = Task(taskFormObject.description, taskFormObject.dueDate, taskFormObject.priority, taskFormObject.id);
       projectTaskArray.push(newTask);
+      updateLocalStorage(userProjectList);
       return newTask;
     };
   
@@ -139,6 +133,17 @@ const Display = (() => {
     return addTaskButton;
   };
 
+  // Create a psuedotask object to be passed to the addTaskToProjectFunction
+  const getTaskInfoFromForm = () => {
+    let description = document.getElementById('task-description').value;
+    let dueDate = document.getElementById('task-due-date').value;
+    const taskPrioritySelector = document.getElementById('task-priority');
+    let priority = taskPrioritySelector.options[taskPrioritySelector.selectedIndex].value;
+    const id = Date.now()
+
+    return {description, dueDate, priority, id}
+  }
+
   const promptForNewTask = () => {
     const addTaskElement = document.createElement('div');
     addTaskElement.classList.add('add-task-prompt');
@@ -196,9 +201,10 @@ const Display = (() => {
     submitButton.classList.add('task-confirmation-button', 'submit');
     submitButton.innerText = 'Add';
     submitButton.addEventListener('click', () => {
-      console.log(userProjectList.projectArray[userProjectList.currentProjectIndex])
-      const newTask = userProjectList.projectArray[userProjectList.currentProjectIndex].Project.addTaskToProject();
+      const taskInfo = getTaskInfoFromForm()
+      const newTask = userProjectList.projectArray[userProjectList.currentProjectIndex].Project.addTaskToProject(taskInfo);
       displayTask(newTask);
+      updateLocalStorage(userProjectList);
       addTaskElement.remove();
       taskWindowSelector.appendChild(showAddTaskButton());
     });
@@ -312,7 +318,15 @@ const Display = (() => {
     }
   }
 
-  return {showNewProjectButton, loadSavedProjectsToSidebar};
+  const loadActiveTasks = (projectList) => {
+    const activeProject = projectList.projectArray[projectList.currentProjectIndex].Project.projectTaskArray;
+    for (let task of activeProject) {
+      displayTask(task);
+    }
+    taskWindowSelector.appendChild(showAddTaskButton())
+  }
+
+  return {showNewProjectButton, loadSavedProjectsToSidebar, loadActiveTasks};
 })();
 
 function updateLocalStorage(projectList) {
@@ -326,8 +340,12 @@ if (localStorage.key(0)) {
   userProjectList.currentProjectIndex = savedUserData.currentProjectIndex
   for (let project in savedUserData.projectArray) {
     userProjectList.addProject(savedUserData.projectArray[project].projectName)
+    for (let task in savedUserData.projectArray[project].Project.projectTaskArray) {
+      userProjectList.projectArray[project].Project.addTaskToProject(savedUserData.projectArray[project].Project.projectTaskArray[task])
+    }
   }
   Display.loadSavedProjectsToSidebar(userProjectList)
+  Display.loadActiveTasks(userProjectList)
 }
 
 console.log(userProjectList)
