@@ -14,7 +14,7 @@ const ProjectList = () => {
   let currentProjectIndex = 0;
 
   const addProject = (name) => {
-    let newProject = {Project};
+    let newProject = Project();
     newProject.projectName = name;
     projectArray.push(newProject)
     return newProject
@@ -22,12 +22,12 @@ const ProjectList = () => {
 
   const removeProject = () => {}
 
-  const Project = (() => {
+  const Project = () => {
 
     let projectName;
 
     // Array of task objects for project
-    const projectTaskArray = [];
+    let projectTaskArray = [];
   
     // create task objects
     let Task = (description, dueDate, priority, id) => {
@@ -38,7 +38,6 @@ const ProjectList = () => {
     const addTaskToProject = (taskFormObject) => {
       let newTask = Task(taskFormObject.description, taskFormObject.dueDate, taskFormObject.priority, taskFormObject.id);
       projectTaskArray.push(newTask);
-      updateLocalStorage(userProjectList);
       return newTask;
     };
   
@@ -52,7 +51,7 @@ const ProjectList = () => {
     };
   
     return {projectName, projectTaskArray, addTaskToProject, removeTaskFromProject};
-  })();
+  };
 
   return {Project, addProject, removeProject, projectArray, currentProjectIndex};
 };
@@ -93,7 +92,7 @@ const Display = (() => {
     completedButton.classList.add('completed-button');
     completedButton.innerText = "Done!";
     completedButton.addEventListener('click', () => {
-      userProjectList.Project.removeTaskFromProject(task.id);
+      userProjectList.removeTaskFromProject(task.id);
       newTask.remove();
     });
 
@@ -101,7 +100,7 @@ const Display = (() => {
     removeButton.classList.add('remove-button');
     removeButton.innerText = "Remove";
     removeButton.addEventListener('click', () => {
-      userProjectList.Project.removeTaskFromProject(task.id);
+      userProjectList.removeTaskFromProject(task.id);
       newTask.remove();
     });
 
@@ -115,11 +114,21 @@ const Display = (() => {
   }
 
   const loadProjectTasks = (project) => {
+    clearTasksFromDisplay();
     for (task in project.projectTaskArray) {
       displayTask(task);
     };
-    taskWindowSelector.appendChild(showAddTaskButton());
+    if (!document.querySelector('.new-project')){
+      taskWindowSelector.appendChild(showAddTaskButton())
+    }
   };
+
+  const clearTasksFromDisplay = () => {
+    while (taskWindowSelector.firstChild) {
+      taskWindowSelector.removeChild(taskWindowSelector.firstChild)
+    }
+    taskWindowSelector.appendChild(showAddTaskButton())
+  }
 
   const showAddTaskButton = () => {
     const addTaskButton = document.createElement('div');
@@ -202,7 +211,7 @@ const Display = (() => {
     submitButton.innerText = 'Add';
     submitButton.addEventListener('click', () => {
       const taskInfo = getTaskInfoFromForm()
-      const newTask = userProjectList.projectArray[userProjectList.currentProjectIndex].Project.addTaskToProject(taskInfo);
+      const newTask = userProjectList.projectArray[userProjectList.currentProjectIndex].addTaskToProject(taskInfo);
       displayTask(newTask);
       updateLocalStorage(userProjectList);
       addTaskElement.remove();
@@ -319,8 +328,8 @@ const Display = (() => {
   }
 
   const loadActiveTasks = (projectList) => {
-    const activeProject = projectList.projectArray[projectList.currentProjectIndex].Project.projectTaskArray;
-    for (let task of activeProject) {
+    const activeProject = projectList.projectArray[projectList.currentProjectIndex].projectTaskArray;
+    for (let task in activeProject) {
       displayTask(task);
     }
     taskWindowSelector.appendChild(showAddTaskButton())
@@ -340,8 +349,8 @@ if (localStorage.key(0)) {
   userProjectList.currentProjectIndex = savedUserData.currentProjectIndex
   for (let project in savedUserData.projectArray) {
     userProjectList.addProject(savedUserData.projectArray[project].projectName)
-    for (let task in savedUserData.projectArray[project].Project.projectTaskArray) {
-      userProjectList.projectArray[project].Project.addTaskToProject(savedUserData.projectArray[project].Project.projectTaskArray[task])
+    for (let task in savedUserData.projectArray[project].projectTaskArray) {
+      userProjectList.projectArray[project].addTaskToProject(savedUserData.projectArray[project].projectTaskArray[task])
     }
   }
   Display.loadSavedProjectsToSidebar(userProjectList)
