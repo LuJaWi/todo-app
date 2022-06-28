@@ -113,21 +113,10 @@ const Display = (() => {
 
   }
 
-  const loadProjectTasks = (project) => {
-    clearTasksFromDisplay();
-    for (task in project.projectTaskArray) {
-      displayTask(task);
-    };
-    if (!document.querySelector('.new-project')){
-      taskWindowSelector.appendChild(showAddTaskButton())
-    }
-  };
-
   const clearTasksFromDisplay = () => {
     while (taskWindowSelector.firstChild) {
       taskWindowSelector.removeChild(taskWindowSelector.firstChild)
     }
-    taskWindowSelector.appendChild(showAddTaskButton())
   }
 
   const showAddTaskButton = () => {
@@ -313,6 +302,7 @@ const Display = (() => {
     const newProjectSidebarElement = document.createElement('div');
     newProjectSidebarElement.classList.add('project')
     newProjectSidebarElement.addEventListener('click', () => {
+      console.log(project)
       loadProjectTasks(project)
     })
 
@@ -327,15 +317,15 @@ const Display = (() => {
     }
   }
 
-  const loadActiveTasks = (projectList) => {
-    const activeProject = projectList.projectArray[projectList.currentProjectIndex].projectTaskArray;
-    for (let task in activeProject) {
-      displayTask(task);
-    }
+  const loadProjectTasks = (project) => {
+    clearTasksFromDisplay();
+    for (let task in project.projectTaskArray) {
+      displayTask(project.projectTaskArray[task]);
+    };
     taskWindowSelector.appendChild(showAddTaskButton())
-  }
+  };
 
-  return {showNewProjectButton, loadSavedProjectsToSidebar, loadActiveTasks};
+  return {showNewProjectButton, loadSavedProjectsToSidebar, loadProjectTasks};
 })();
 
 function updateLocalStorage(projectList) {
@@ -354,7 +344,7 @@ if (localStorage.key(0)) {
     }
   }
   Display.loadSavedProjectsToSidebar(userProjectList)
-  Display.loadActiveTasks(userProjectList)
+  Display.loadProjectTasks(userProjectList.projectArray[userProjectList.currentProjectIndex])
 }
 
 console.log(userProjectList)
